@@ -50,7 +50,7 @@ app.get("/api/posts", async (req, res) => {
     // This wasn't super DRY, but it would have been a messy if statement to do it with a var and template literals
   }
 
-  // Successful requests
+  // Setting default values
   if (!sortBy) {
     sortBy = "id";
   }
@@ -58,11 +58,35 @@ app.get("/api/posts", async (req, res) => {
     direction = "asc";
   }
   const tags = tag.split(",");
-  const request = tags.map((tag) => {
-    axios.get(url + "?tag=" + tag + sortBy + direction);
-  });
+  // Promise.all for concurrent get requests from the API
+  const results = await Promise.all(
+    tags.map((tag) => {
+      let queryString =
+        url + "?tag=" + tag + "&sortBy=" + sortBy + "&direction=" + direction;
+      return axios.get(queryString);
+    })
+  );
 
-  console.log(tags);
-
-  res.send(tag);
+  // Merging the data and removing duplicates
+  let postStore = [];
+  for (let collection of results) {
+    if (collection.data.posts.length > 0) {
+      postStore.push(collection.data.posts);
+    }
+  }
+  let accumulatedPosts = postStore.flat(1);
+  console.log(accumulatedPosts.length, "before");
+  // Setting up a hash map to check if an id value has been seen
+  const idMap = new Map();
+  for (let i = 0; i < accumulatedPosts.length; i++) {
+    let post = accumulatedPosts[i];
+    let id = post.id;
+    if (!idMap.get(id)) {
+      idMap.set(id, 1);
+    } else if (idMap.get(id) === 1) {
+      accumulatedPosts.splice(i, 1);
+    }
+  }
+  res.status(200);
+  res.send(accumulatedPosts);
 });
