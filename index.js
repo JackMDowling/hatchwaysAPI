@@ -76,7 +76,7 @@ app.get("/api/posts", async (req, res) => {
   }
   let accumulatedPosts = postStore.flat(1);
   console.log(accumulatedPosts.length, "before");
-  // Setting up a hash map to check if an id value has been seen
+  // Setting up a hash map to check if an id value has been seen to remove duplicates
   const idMap = new Map();
   for (let i = 0; i < accumulatedPosts.length; i++) {
     let post = accumulatedPosts[i];
@@ -87,6 +87,25 @@ app.get("/api/posts", async (req, res) => {
       accumulatedPosts.splice(i, 1);
     }
   }
+  // Calling helper function to sort array, bundling it up and sending it to the client
+  arraySort(sortBy, direction, accumulatedPosts);
+  let dataResponse = {
+    posts: accumulatedPosts,
+  };
   res.status(200);
-  res.send(accumulatedPosts);
+  res.send(dataResponse);
 });
+
+// Helper function to sort
+const arraySort = (sortBy, direction, array) => {
+  console.log(sortBy, direction);
+  if (direction === "asc") {
+    array.sort((a, b) => {
+      return a[sortBy] - b[sortBy];
+    });
+  } else {
+    array.sort((a, b) => {
+      return b[sortBy] - a[sortBy];
+    });
+  }
+};
