@@ -1,11 +1,12 @@
 {
+  "type": "module",
   "name": "hatchwaysapi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "test": "jest",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,10 @@
   },
   "homepage": "https://github.com/JackMDowling/hatchwaysAPI#readme",
   "dependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
     "axios": "^0.26.0",
+    "babel-jest": "^27.5.1",
     "express": "^4.17.3"
   },
   "devDependencies": {

@@ -1,12 +1,12 @@
-const express = require("express");
-const axios = require("axios");
-
+import express from "express";
+import axios from "axios";
 const app = express();
-const port = process.env.PORT || 3000;
+// moving this for jest testing
+// const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Listening on port: ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Listening on port: ${port}`);
+// });
 
 const url = "https://api.hatchways.io/assessment/blog/posts";
 
@@ -117,4 +117,4 @@ function arraySort(sortBy, direction, array) {
   }
 }
 
-module.exports = app;
+export default app;
