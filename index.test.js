@@ -1,6 +1,9 @@
-import supertest from "supertest";
+const request = require("supertest");
 import app from "./index";
 
+it("Testing to see if Jest works", () => {
+  expect(1).toBe(1);
+});
 // test the ping route
 describe("Hitting the ping route", () => {
   describe("Upon sending a get request to the ping rout", () => {
@@ -11,7 +14,7 @@ describe("Hitting the ping route", () => {
   });
 });
 // should get status 200
-// reponse should be json
+// response should be json
 
 // test the post route
 describe("Hitting the posts route", () => {
