@@ -33,6 +33,7 @@ app.get("/api/posts", async (req, res) => {
     };
     res.status(400);
     res.json(missingTag);
+    return;
   }
   if (sortBy && !validSort.includes(sortBy)) {
     const sortError = {
@@ -40,6 +41,7 @@ app.get("/api/posts", async (req, res) => {
     };
     res.status(400);
     res.json(sortError);
+    return;
   }
   if (direction && !validDir.includes(direction)) {
     const dirError = {
@@ -47,6 +49,7 @@ app.get("/api/posts", async (req, res) => {
     };
     res.status(400);
     res.json(dirError);
+    return;
     // This wasn't super DRY, but it would have been a messy conditional statement if I used a var and template literals
   }
 

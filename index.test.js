@@ -6,7 +6,7 @@ it("Testing to see if Jest works", () => {
 });
 // test the ping route
 describe("Hitting the ping route", () => {
-  describe("Upon sending a get request to the ping rout", () => {
+  describe("Upon sending a get request to the ping route", () => {
     test("should get status 200", async () => {
       const response = await request(app).get("/api/ping");
       expect(response.statusCode).toBe(200);
@@ -19,13 +19,42 @@ describe("Hitting the ping route", () => {
 // test the post route
 describe("Hitting the posts route", () => {
   describe("When no tag parameter is included", () => {
+    describe("Upon sending a get request to the post route with no tag", () => {
+      test("should get status 400", async () => {
+        const response = await request(app).get("/api/posts?");
+        expect(response.statusCode).toBe(400);
+      });
+    });
     // should get error 400 if no tag
   });
   describe("When sortBy is not valid", () => {
+    describe("Upon sending a get request to the post route with an invalid sortBy", () => {
+      test("should get status 400", async () => {
+        const response = await request(app).get(
+          "/api/posts?tag=tech&sortBy=left"
+        );
+        expect(response.statusCode).toBe(400);
+      });
+    });
     // should get error 400 if sort/dir are bad
   });
   describe("When direction is not valid", () => {});
+  describe("Upon sending a get request to the post route with an invalid direction", () => {
+    test("should get status 400", async () => {
+      const response = await request(app).get(
+        "/api/posts?tag=tech&direction=up"
+      );
+      expect(response.statusCode).toBe(400);
+    });
+  });
+  // 200 Status tests
   describe("When all the parameters are valid", () => {
+    describe("Upon sending a get request to the post route with proper params", () => {
+      test("should get status 200", async () => {
+        const response = await request(app).get("/api/posts/?tag=science,tech");
+        expect(response.statusCode).toBe(200);
+      });
+    });
     // should get 200 if params are good
   });
   describe("When ascending order is selected", () => {
