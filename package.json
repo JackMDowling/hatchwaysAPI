@@ -23,9 +23,9 @@
     "@babel/preset-env": "^7.16.11",
     "axios": "^0.26.0",
     "babel-jest": "^27.5.1",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "memory-cache": "^0.2.0"
   },
-
   "devDependencies": {
     "jest": "^27.5.1",
     "supertest": "^6.2.2"
