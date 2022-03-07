@@ -1,6 +1,7 @@
 import express from "express";
 import axios from "axios";
 const app = express();
+const cache = {};
 // moving this for jest testing
 // const port = process.env.PORT || 3000;
 
@@ -61,26 +62,34 @@ app.get("/api/posts", async (req, res) => {
     direction = "asc";
   }
   const tags = tag.split(",");
-  // Promise.all for concurrent get requests from the API
-  const results = await Promise.all(
-    tags.map((tag) => {
-      let queryString =
-        url + "?tag=" + tag + "&sortBy=" + sortBy + "&direction=" + direction;
-      return axios.get(queryString);
-    })
-  );
+  let key = "?tag=" + tag + "&sortBy=" + sortBy + "&direction=" + direction;
+  if (cache[key]) {
+    res.status(200);
+    res.send(cache[key]);
+    return;
+  } else {
+    // Promise.all for concurrent get requests from the API
+    const results = await Promise.all(
+      tags.map((tag) => {
+        let queryString =
+          url + "?tag=" + tag + "&sortBy=" + sortBy + "&direction=" + direction;
+        return axios.get(queryString);
+      })
+    );
+    // Merging the data and removing duplicates
+    // Calling helper functions to sort array, bundling it up and sending it to the client
+    let accumulatedPosts = arrayFilter(results);
+    arraySort(sortBy, direction, accumulatedPosts);
 
-  // Merging the data and removing duplicates
-  // Calling helper functions to sort array, bundling it up and sending it to the client
-  let accumulatedPosts = arrayFilter(results);
-  arraySort(sortBy, direction, accumulatedPosts);
-
-  let dataResponse = {
-    posts: accumulatedPosts,
-  };
-  res.status(200);
-  res.send(dataResponse);
+    let dataResponse = {
+      posts: accumulatedPosts,
+    };
+    cache[key] = dataResponse;
+    res.status(200);
+    res.send(dataResponse);
+  }
 });
+
 
 // Helper function to filter and sort
 function arrayFilter(array) {
